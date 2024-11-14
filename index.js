@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const bugReportRoutes = require('./routes/bugReports');
 const contactRoutes = require('./routes/contact');
+const bookRequestRoutes = require('./routes/bookRequest');
 
 dotenv.config();
 
@@ -31,7 +32,7 @@ mongoose
 
 app.use('/api/bugReports', bugReportRoutes);
 app.use('/api/contacts', contactRoutes);
-
+app.use('/api/book-requests', bookRequestRoutes);
 app.get('/api', (req, res) => {
     res.json({ message: 'Hello from the backend, connected to MongoDB!' });
 });
