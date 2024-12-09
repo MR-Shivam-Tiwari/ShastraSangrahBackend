@@ -1,19 +1,45 @@
 const express = require('express');
 const BugReport = require('../models/BugReport');
-
+const multer = require("multer");
 const router = express.Router();
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Specify upload folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+const upload = multer({ storage });
 
-// CREATE a new bug report
-router.post('/', async (req, res) => {
-  const { name, email, phone, screenshot, description } = req.body;
+router.post("/", upload.single("screenshot"), async (req, res) => {
   try {
-    const newBugReport = new BugReport({ name, email, phone, screenshot, description });
+    const { name, email, phone, description } = req.body;
+    const screenshot = req.file ? req.file.path : null; // File path or null
+
+    // Create a new bug report
+    const newBugReport = new BugReport({
+      name,
+      email,
+      phone,
+      description,
+      screenshot, // Save the file path in the database
+    });
+
     await newBugReport.save();
-    res.status(201).json({ message: 'Bug report created successfully', bugReport: newBugReport });
+
+    res.status(201).json({
+      message: "Bug report created successfully",
+      bugReport: newBugReport,
+    });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create bug report', details: error.message });
+    res.status(500).json({
+      error: "Failed to create bug report",
+      details: error.message,
+    });
   }
 });
+
 
 // READ all bug reports
 // READ all bug reports

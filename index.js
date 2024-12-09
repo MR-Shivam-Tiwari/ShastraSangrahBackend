@@ -1,12 +1,12 @@
 // index.js
-const express = require('express');
+const express = require("express");
 const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const bugReportRoutes = require('./routes/bugReports');
 const contactRoutes = require('./routes/contact');
 const bookRequestRoutes = require('./routes/bookRequest');
-
+const path = require("path");
 dotenv.config();
 
 const app = express();
@@ -29,7 +29,7 @@ mongoose
     .catch((error) => console.error('Error connecting to MongoDB:', error));
 
 // Sample Route
-
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/bugReports', bugReportRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/book-requests', bookRequestRoutes);
